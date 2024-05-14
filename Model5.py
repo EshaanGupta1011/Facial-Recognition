@@ -43,7 +43,7 @@ test_data_dir = "./Data/test"
 
 train = pd.DataFrame()
 train['image'], train['label'] = load_dataset(train_data_dir)
-# shuffle the dataset
+
 train = train.sample(frac=1).reset_index(drop=True)
 
 test = pd.DataFrame()
@@ -81,15 +81,12 @@ y_test = to_categorical(y_test, num_classes=7)
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 
-# Train KNN classifier
 knn_classifier = KNeighborsClassifier(n_neighbors=5, weights="distance")
 knn_classifier.fit(x_train.reshape(len(x_train), -1), y_train)
 
-# Predict labels for testing data
 y_pred_train = knn_classifier.predict(x_train.reshape(len(x_train), -1))
 y_pred_test = knn_classifier.predict(x_test.reshape(len(x_test), -1))
 
-# Evaluate model
 train_accuracy = accuracy_score(np.argmax(y_train, axis=1), np.argmax(y_pred_train, axis=1))
 test_accuracy = accuracy_score(np.argmax(y_test, axis=1), np.argmax(y_pred_test, axis=1))
 
@@ -100,26 +97,24 @@ print("Testing Accuracy:", test_accuracy)
 train_accuracies = []
 test_accuracies = []
 
-k_values = range(1, 21)  # Try k values from 1 to 20
+k_values = range(1, 5)
 
 for k in k_values:
-    # Train KNN classifier
     knn_classifier = KNeighborsClassifier(n_neighbors=k, weights="distance")
     knn_classifier.fit(x_train.reshape(len(x_train), -1), y_train)
 
-    # Predict labels for training and testing data
+
     y_pred_train = knn_classifier.predict(x_train.reshape(len(x_train), -1))
     y_pred_test = knn_classifier.predict(x_test.reshape(len(x_test), -1))
 
-    # Calculate accuracy for training and testing data
+
     train_accuracy = accuracy_score(np.argmax(y_train, axis=1), np.argmax(y_pred_train, axis=1))
     test_accuracy = accuracy_score(np.argmax(y_test, axis=1), np.argmax(y_pred_test, axis=1))
 
-    # Append accuracies to lists
     train_accuracies.append(train_accuracy)
     test_accuracies.append(test_accuracy)
 
-# Plot the graph
+# ****************************************************************************************
 plt.figure(figsize=(10, 6))
 plt.plot(k_values, train_accuracies, label='Training Accuracy', marker='o')
 plt.plot(k_values, test_accuracies, label='Testing Accuracy', marker='o')

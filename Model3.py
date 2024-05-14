@@ -57,18 +57,15 @@ le.fit(train['label'])
 y_train = le.transform(train['label'])
 y_test = le.transform(test['label'])
 
-# Use integer-encoded labels for training
 decision_tree = DecisionTreeClassifier(max_depth=50, random_state=42)
 decision_tree.fit(train_features.reshape(len(train_features), -1), y_train)
 
-# Evaluate the decision tree model
 train_accuracy = decision_tree.score(train_features.reshape(len(train_features), -1), y_train)
 test_accuracy = decision_tree.score(test_features.reshape(len(test_features), -1), y_test)
 
 print("Training Accuracy:", train_accuracy)
 print("Testing Accuracy:", test_accuracy)
 
-# Visualize the decision tree
 plt.figure(figsize=(20,10))
 plot_tree(decision_tree, filled=True, feature_names=[str(i) for i in range(48*48)], class_names=le.classes_)
 plt.show()

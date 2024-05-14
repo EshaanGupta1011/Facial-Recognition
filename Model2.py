@@ -2,11 +2,9 @@ import os
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from PIL import Image
 import numpy as np
 from keras.preprocessing.image import load_img
 from tensorflow.keras.utils import to_categorical
-from sklearn.cluster import KMeans
 
 
 def load_dataset(directory):
@@ -51,7 +49,6 @@ test['image'], test['label'] = load_dataset(test_data_dir)
 
 # sns.countplot(train['label'])
 # plt.show()
-
 # for index, file, label in files.itertuples():
 #     plt.subplot(5, 5, index+1)
 #     img = load_img(file)
@@ -78,35 +75,32 @@ y_test = to_categorical(y_test, num_classes=7)
 
 # ******************************************************
 
-# from sklearn.svm import SVC
-# from sklearn.metrics import accuracy_score
-#
-# Flatten the feature vectors
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score
+
 x_train_flatten = x_train.reshape(x_train.shape[0], -1)
 x_test_flatten = x_test.reshape(x_test.shape[0], -1)
-#
-# # Create and train the SVM classifier
-# svm_classifier = SVC(kernel='linear', C=1.0, random_state=42)
-# svm_classifier.fit(x_train_flatten, train['label'])
-#
-# # Predict labels for test data
-# y_pred = svm_classifier.predict(x_test_flatten)
-#
-# # Calculate accuracy
-# accuracy = accuracy_score(test['label'], y_pred)
-# print("Accuracy:", accuracy)
 
-from sklearn.decomposition import PCA
+svm_classifier = SVC(kernel='linear', C=1.0, random_state=42)
+svm_classifier.fit(x_train_flatten, train['label'])
 
-# Reduce the dimensionality of the feature vectors using PCA
-pca = PCA(n_components=2)
-x_train_pca = pca.fit_transform(x_train_flatten)
+y_pred = svm_classifier.predict(x_test_flatten)
+x_pred = svm_classifier.predict(x_train_flatten)
 
-# Plot the points in 2D space
-plt.figure(figsize=(10, 8))
-sns.scatterplot(x=x_train_pca[:, 0], y=x_train_pca[:, 1], hue=train['label'], palette='viridis')
-plt.title('2D PCA Visualization of Training Data')
-plt.xlabel('Principal Component 1')
-plt.ylabel('Principal Component 2')
-plt.legend(title='Label')
-plt.show()
+accuracy = accuracy_score(test['label'], y_pred)
+accuracy_train = accuracy_score(train["label"], x_pred)
+print("Accuracy of testing data:", accuracy)
+print("Accuracy of training data: ", accuracy_train)
+
+# *************************************************************
+
+# from sklearn.decomposition import PCA
+#
+# pca = PCA(n_components=2)
+# x_test_pca = pca.fit_transform(x_test_flatten)
+#
+# plt.figure(figsize=(10, 8))
+# sns.scatterplot(x=x_test_pca[:, 0], y=x_test_pca[:, 1], hue=test['label'], palette='viridis')
+# plt.title('2D PCA Visualization of Testing Data')
+# plt.legend(title='Label')
+# plt.show()

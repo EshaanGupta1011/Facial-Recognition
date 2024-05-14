@@ -32,7 +32,6 @@ def load_dataset(directory):
 
     return image_paths, labels
 
-## convert into dataframe
 train = pd.DataFrame()
 train['image'], train['label'] = load_dataset(TRAIN_DIR)
 # shuffle the dataset
@@ -72,11 +71,11 @@ def extract_features(images):
 train_features = extract_features(train['image'])
 test_features = extract_features(test['image'])
 
-## normalize the image
+
 x_train = train_features/255.0
 x_test = test_features/255.0
 
-## convert label to integer
+
 from sklearn.preprocessing import LabelEncoder
 le = LabelEncoder()
 le.fit(train['label'])
@@ -85,12 +84,10 @@ y_test = le.transform(test['label'])
 y_train = to_categorical(y_train, num_classes=7)
 y_test = to_categorical(y_test, num_classes=7)
 
-# config
 input_shape = (48, 48, 1)
 output_class = 7
 
 model = Sequential()
-# convolutional layers
 model.add(Conv2D(128, kernel_size=(3,3), activation='relu', input_shape=input_shape))
 model.add(MaxPooling2D(pool_size=(2,2)))
 model.add(Dropout(0.4))
@@ -108,12 +105,12 @@ model.add(MaxPooling2D(pool_size=(2,2)))
 model.add(Dropout(0.4))
 
 model.add(Flatten())
-# fully connected layers
+
 model.add(Dense(512, activation='relu'))
 model.add(Dropout(0.4))
 model.add(Dense(256, activation='relu'))
 model.add(Dropout(0.3))
-# output layer
+
 model.add(Dense(output_class, activation='softmax'))
 
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics='accuracy')

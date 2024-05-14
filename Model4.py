@@ -5,7 +5,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from keras.preprocessing.image import load_img
-from tensorflow.keras.utils import to_categorical
 
 
 def load_dataset(directory):
@@ -38,7 +37,7 @@ test_data_dir = "./Data/test"
 
 train = pd.DataFrame()
 train['image'], train['label'] = load_dataset(train_data_dir)
-# shuffle the dataset
+
 train = train.sample(frac=1).reset_index(drop=True)
 
 test = pd.DataFrame()
@@ -57,13 +56,18 @@ y_train = le.transform(train['label'])
 y_test = le.transform(test['label'])
 
 
-# Initialize and train Naive Bayes classifier
+# *****************************************************
+
 naive_bayes = GaussianNB()
 naive_bayes.fit(x_train, y_train)
 
-# Predict labels for testing data
 y_pred = naive_bayes.predict(x_test)
+x_predict = naive_bayes.predict(x_train)
 
-# Evaluate accuracy
+x_predict_labels = np.argmax(naive_bayes.predict_proba(x_train), axis=1)
+
+accuracy_train = accuracy_score(y_train, x_predict_labels)
 accuracy = accuracy_score(y_test, y_pred)
+
 print("Accuracy:", accuracy)
+print("Accuracy of training data:", accuracy_train)
