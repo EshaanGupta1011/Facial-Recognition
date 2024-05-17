@@ -46,17 +46,16 @@ from PIL import Image
 img = Image.open(train['image'][0])
 plt.imshow(img, cmap='gray');
 
-# to display grid of images
-plt.figure(figsize=(20,20))
-files = train.iloc[0:25]
-
-for index, file, label in files.itertuples():
-    plt.subplot(5, 5, index+1)
-    img = load_img(file)
-    img = np.array(img)
-    plt.imshow(img)
-    plt.title(label)
-    plt.axis('off')
+# plt.figure(figsize=(20,20))
+# files = train.iloc[0:25]
+#
+# for index, file, label in files.itertuples():
+#     plt.subplot(5, 5, index+1)
+#     img = load_img(file)
+#     img = np.array(img)
+#     plt.imshow(img)
+#     plt.title(label)
+#     plt.axis('off')
 
 def extract_features(images):
     features = []
